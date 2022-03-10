@@ -1,4 +1,5 @@
 import api from './axiosCreate'
+const apiUrl = 'http://178.159.39.106/api/v1/'
 
 const userRegister = async ({ data }) => {
     return (
@@ -16,21 +17,8 @@ const getUsers = async ({ token }) => {
     )
 }
 
-const userUpdate = async ({ data, token, photo }) => {
-    return (
-        await api.put(`user/profile`, data, {
-            headers: {
-                Authorization: `Token ${token}`,
-                "Content-Type": "multipart/form-data",
-                Accept: "application/json",
-                profile_photo: photo
-            }
-        })
-    )
-}
-
 export {
     userRegister,
     getUsers,
-    userUpdate
+    apiUrl
 }

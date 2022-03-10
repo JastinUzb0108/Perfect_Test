@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUsers } from 'Api'
 
 export const GlobalState = createContext()
 
@@ -8,6 +9,7 @@ export const DataProvider = ({ children }) => {
     const [clocks, setClocks] = useState('')
     const [week, setWeek] = useState('')
     const [loading, setLoading] = useState(true)
+    const [userData, setUserData] = useState({})
 
     useEffect(() => {
         setWeek(day)
@@ -25,13 +27,27 @@ export const DataProvider = ({ children }) => {
             }
         }
 
+        const getUserData = () => {
+            getUsers({ token })
+                .then((res) => {
+                    setUserData(res.data.data)
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                })
+        }
+
         setTimeout(() => {
             setLoading(false)
-        }, 2500)
+        }, 1500)
 
         setTimeout(() => {
             getToken()
         }, 1000)
+
+        setTimeout(() => {
+            getUserData()
+        },10030)
 
     }, [token])
 
@@ -52,7 +68,7 @@ export const DataProvider = ({ children }) => {
         clocks: [clocks, setClocks],
         week: [week, setWeek],
         loading: [loading, setLoading],
-
+        userData: [userData, setUserData]
     }
 
     return (

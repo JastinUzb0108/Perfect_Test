@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useThemeContext } from 'Themes'
 
 import { useTheme } from 'styled-components/native';
-import { getUsers, userUpdate } from 'Api'
+import { apiUrl } from 'Api'
 import { GlobalState } from 'Config';
 import { McText, McImage } from 'Components'
 import { Images } from 'Constants'
@@ -15,31 +16,60 @@ const Settings = ({ animatedStyle, navigation }) => {
     const themeContext = useThemeContext();
     const state = useContext(GlobalState)
     const [token] = state.token
-    const [userData, setUserData] = useState({})
+    const [userData, setUserData] = state.userData
+    const [photo, setPhoto] = useState(null);
 
-    useEffect(() => {
-        const getUserData = () => {
-            getUsers({ token })
-                .then((res) => {
-                    setUserData(res.data.data)
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                })
-        }
-        getUserData()
-    }, [])
-
-    const updateUsers = () => {
-
-        userUpdate({ data: userData, token: token })
-            .then((res) => {
-                console.log(res.data.data);
+    const handleUploadPhoto = () => {
+        fetch(`${apiUrl}user/profile/`, {
+            method: 'PUT',
+            body: createFormData(photo, {
+                name: userData.name,
+                username: userData.username,
+                phone_number: userData.phone_number
+            }),
+            headers: {
+                Accept: "application/json",
+                Authorization: `Token ${token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((response) => {
+                console.log('response', response);
             })
-            .catch((err) => {
-                console.log(err.message);
-            })
-    }
+            .catch((error) => {
+                console.log('error', error);
+            });
+    };
+
+    const createFormData = (photo, body = {}) => {
+        const data = new FormData();
+
+        data.append('photo', {
+            name: photo.fileName,
+            type: photo.type,
+            uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+        });
+
+        Object.keys(body).forEach((key) => {
+            data.append(key, body[key]);
+        });
+
+        return data;
+    };
+
+    const handleChoosePhoto = () => {
+        launchImageLibrary({
+            mediaType: 'photo',
+            maxHeight: 150,
+            maxWidth: 150,
+        }, (response) => {
+            if (response) {
+                setPhoto(response.assets[0]);
+            }
+        });
+
+
+    };
 
     return (
         <Animated.View
@@ -56,10 +86,17 @@ const Settings = ({ animatedStyle, navigation }) => {
             <View style={styles.container}>
                 <View>
                     <TouchableOpacity
+                        onPress={handleChoosePhoto}
                         style={
                             styles.box
                         }>
-                        <McImage source={Images.avatarUser1} style={styles.imgStyle} />
+                        {userData.photo ?
+                            userData.photo.uri && <McImage source={{ uri: `${apiUrl}media/photos/rn_image_picker_lib_temp_53912b9c-2cab-4eed-87c2-3be6ffe4c69b.jpg` }} style={styles.imgStyle} />
+                            :
+                            photo ? 
+                            photo.uri && <McImage source={{ uri: photo.uri }} style={styles.imgStyle} /> :
+                            <McImage source={Images.avatarUser1} style={styles.imgStyle} />
+                        }
                     </TouchableOpacity>
                 </View>
 
@@ -112,7 +149,7 @@ const Settings = ({ animatedStyle, navigation }) => {
 
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={updateUsers}
+                    onPress={handleUploadPhoto}
                 >
                     <McText medium size={18} color={theme.colors.text1}>
                         Edit profile

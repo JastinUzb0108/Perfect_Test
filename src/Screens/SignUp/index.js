@@ -27,15 +27,18 @@ const SignUp = ({ navigation }) => {
     const [week] = state.week
     const [token, setToken] = state.token
 
+    const setItemToken = async (item) => {
+        try {
+            await AsyncStorage.setItem('token', item)
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const onSubmitData = async () => {
         userRegister({ data })
-            .then(async (res) => {
-                try {
-                    await AsyncStorage.setItem('token', res.data.token)
-                    setToken(res.data.token)
-                } catch (err) {
-                    console.log(err);
-                }
+            .then((res) => {
+                setItemToken(res.data.token)
             })
             .catch((err) => {
                 console.log(err);
@@ -125,6 +128,7 @@ const SignUp = ({ navigation }) => {
                             onPress={() => {
                                 navigation.navigate('Home')
                                 onSubmitData()
+                                setToken(true)
                             }}
                             style={{
                                 width: 220,

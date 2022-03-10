@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { useTheme } from 'styled-components'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +23,7 @@ import {
     Help,
     Marketing
 } from 'Screens'
+import {GlobalState} from 'Config' 
 
 const Drawer = createDrawerNavigator();
 const menus = [
@@ -62,9 +63,12 @@ const menus = [
 
 const CustomDrawerContent = ({ navigation, theme }) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const state = useContext(GlobalState)
+    const [token, setToken] = state.token
     const logout = async () => {
         try {
             await AsyncStorage.removeItem('token')
+            setToken(false)
         } catch (err) {
             console.log(err);
         }
@@ -164,7 +168,7 @@ const CustomDrawerContent = ({ navigation, theme }) => {
                 <TouchableOpacity
                     onPress={() => {
                         navigation.closeDrawer()
-                        navigation.navigate('Dashboard')
+                        navigation.navigate('Home')
                         logout()
                     }}
                     style={{
