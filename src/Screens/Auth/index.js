@@ -92,19 +92,42 @@ const Dashboard = ({ navigation }) => {
                     <View>
                         <TouchableOpacity
                             onPress={() => {
-                                navigation.navigate('SignUp')
+                                navigation.navigate('SignIn')
                             }}
                             style={{
                                 height: 50,
                                 width: 190,
                                 borderRadius: 10,
-                                backgroundColor: theme.colors.primary,
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                borderColor: theme.colors.primary,
+                                borderWidth: 2,
                             }}>
-                            <McText semi size={16} color="#212330" >
-                                CreateAccaunts
+                            <McText semi size={16} color={theme.colors.text1} >
+                                Sign In
+                            </McText>
+                            <McImage source={Images.right_arrow} style={{
+                                marginLeft: 8
+                            }} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('SignUp')
+                            }}
+                            style={{
+                                height: 50,
+                                width: 188,
+                                borderRadius: 10,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: theme.colors.primary,
+                                marginTop: 15
+                            }}>
+                            <McText semi size={16} color={theme.colors.text2} >
+                                Create Accaunts
                             </McText>
                             <McImage source={Images.right_arrow} style={{
                                 marginLeft: 8

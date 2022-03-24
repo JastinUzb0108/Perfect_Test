@@ -12,7 +12,8 @@ import {
     SignUp,
     Help,
     Dashboard,
-    Marketing
+    Marketing,
+    SignIn
 } from 'Screens'
 
 const Stack = createStackNavigator()
@@ -96,6 +97,14 @@ const Stacks = ({ params }) => {
             <Stack.Screen
                 name="Marketing"
                 component={Marketing}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            
+            <Stack.Screen
+                name="SignIn"
+                component={SignIn}
                 options={{
                     headerShown: false,
                 }}

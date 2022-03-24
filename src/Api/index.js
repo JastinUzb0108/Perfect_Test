@@ -17,8 +17,15 @@ const getUsers = async ({ token }) => {
     )
 }
 
+const userLogin = async ({ data }) => {
+    return (
+        await api.post('user/login/', data)
+    )
+}
+
 export {
     userRegister,
     getUsers,
+    userLogin,
     apiUrl
 }

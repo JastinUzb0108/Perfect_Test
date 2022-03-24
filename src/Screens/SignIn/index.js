@@ -6,18 +6,15 @@ import { McText, McImage } from 'Components'
 import { Images } from 'Constants'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { userRegister } from 'Api'
+import { userLogin } from 'Api'
 import { GlobalState } from 'Config'
 
 const { width, height } = Dimensions.get('window');
 
-const SignUp = ({ navigation }) => {
+const SignIn = ({ navigation }) => {
     const [data, setData] = useState({
         password: "",
         username: "",
-        name: "",
-        phone_number: "",
-        phone_id: "AKSdkajsbdjakdbadadajdA_d0asdaksjdn"
     })
 
     const theme = useTheme()
@@ -26,17 +23,19 @@ const SignUp = ({ navigation }) => {
     const [clocks] = state.clocks
     const [week] = state.week
     const [token, setToken] = state.token
+    const [loading, setLoading] = state.loading
 
     const setItemToken = async (item) => {
         try {
             await AsyncStorage.setItem('token', item)
+            setToken(true)
         } catch (err) {
             console.log(err);
         }
     }
 
     const onSubmitData = async () => {
-        userRegister({ data })
+        userLogin({ data })
             .then((res) => {
                 setItemToken(res.data.token)
             })
@@ -76,18 +75,6 @@ const SignUp = ({ navigation }) => {
                     <View>
                         <TextInput
                             onChangeText={(text) => {
-                                setData({ ...data, name: text })
-                            }}
-                            style={[styles.inputStyle, {
-                                borderColor: theme.colors.primary,
-                                color: theme.colors.text1
-                            }]}
-                            value={data.name}
-                            placeholderTextColor={theme.colors.text3}
-                            placeholder=' Name'
-                        />
-                        <TextInput
-                            onChangeText={(text) => {
                                 setData({ ...data, username: text })
                             }}
                             style={[styles.inputStyle, {
@@ -98,18 +85,7 @@ const SignUp = ({ navigation }) => {
                             placeholderTextColor={theme.colors.text3}
                             placeholder='User Name'
                         />
-                        <TextInput
-                            onChangeText={(text) => {
-                                setData({ ...data, phone_number: text })
-                            }}
-                            style={[styles.inputStyle, {
-                                borderColor: theme.colors.primary,
-                                color: theme.colors.text1
-                            }]}
-                            value={data.phone_number}
-                            placeholderTextColor={theme.colors.text3}
-                            placeholder='Phone Number'
-                        />
+
                         <TextInput
                             onChangeText={(text) => {
                                 setData({ ...data, password: text })
@@ -128,7 +104,7 @@ const SignUp = ({ navigation }) => {
                             onPress={() => {
                                 navigation.navigate('Home')
                                 onSubmitData()
-                                setToken(true)
+                                setLoading(true)
                             }}
                             style={{
                                 width: 220,
@@ -140,7 +116,7 @@ const SignUp = ({ navigation }) => {
                                 alignItems: 'center'
                             }}>
                             <McText semi size={16} color="#212330">
-                                CreateAccaunts
+                                Sign In
                             </McText>
                         </TouchableOpacity>
                     </View>
@@ -161,7 +137,7 @@ const SignUp = ({ navigation }) => {
                         </View>
                         <TouchableOpacity
                             onPress={() => {
-                                navigation.navigate('SignIn')
+                                navigation.navigate('SignUp')
                             }}
                             style={{
                                 height: 46,
@@ -174,7 +150,7 @@ const SignUp = ({ navigation }) => {
                                 borderRadius: 10
                             }}>
                             <McText semi size={16} color={theme.colors.text1} >
-                                Sign In
+                                CreateAccaunts
                             </McText>
                         </TouchableOpacity>
                     </View>
@@ -198,4 +174,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SignUp
+export default SignIn

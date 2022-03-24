@@ -10,6 +10,7 @@ import SignUp from "./SignUp";
 import Help from "./Help";
 import Dashboard from './Auth'
 import Marketing from "./Marceting";
+import SignIn from "./SignIn";
 
 export {
     Home,
@@ -23,5 +24,6 @@ export {
     SignUp,
     Help,
     Dashboard,
-    Marketing
+    Marketing,
+    SignIn,
 }
